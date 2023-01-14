@@ -4,20 +4,19 @@ import {
   SearchFormBtn,
   SearchFormInput,
 } from './Searchbar.styled';
-import { Component } from 'react';
 import { BiSearchAlt2 } from 'react-icons/bi';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
-export default class Searchbar extends Component {
-  state = { query: '' };
+export default function Searchbar({ handleSubmit }) {
+  const [query, setQuery] = useState('');
 
-  handleChange = event => {
-    this.setState({ query: event.target.value });
+  const handleChange = event => {
+    setQuery(event.target.value);
   };
 
-  handleSubmit = event => {
+  const onFormSubmit = event => {
     event.preventDefault();
-    const { query } = this.state;
     const normalizedQuery = query.trim().toLocaleLowerCase();
 
     if (!query.trim()) {
@@ -25,35 +24,29 @@ export default class Searchbar extends Component {
       return;
     }
 
-    this.props.handleSubmit(normalizedQuery);
+    handleSubmit(normalizedQuery);
 
-    this.setState({
-      query: '',
-    });
+    setQuery('');
   };
 
-  render() {
-    const { query } = this.state;
+  return (
+    <HeaderSearchbar>
+      <SearchForm onSubmit={onFormSubmit}>
+        <SearchFormBtn type="submit">
+          <BiSearchAlt2 size={20} />
+        </SearchFormBtn>
 
-    return (
-      <HeaderSearchbar>
-        <SearchForm onSubmit={this.handleSubmit}>
-          <SearchFormBtn type="submit">
-            <BiSearchAlt2 size={20} />
-          </SearchFormBtn>
-
-          <SearchFormInput
-            type="text"
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.handleChange}
-            value={query}
-          />
-        </SearchForm>
-      </HeaderSearchbar>
-    );
-  }
+        <SearchFormInput
+          type="text"
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          onChange={handleChange}
+          value={query}
+        />
+      </SearchForm>
+    </HeaderSearchbar>
+  );
 }
 
 Searchbar.propTypes = {
